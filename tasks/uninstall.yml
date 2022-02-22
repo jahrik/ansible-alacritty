@@ -1,0 +1,17 @@
+---
+- name: Uninstall neovim
+  become: true
+  package:
+    name:
+      - neovim
+    state: absent
+  tags:
+    - nvim
+
+- name: Destroy ~/.config/nvim directory
+  become: false
+  file:
+    path: ~/.config/nvim
+    state: absent
+  tags:
+    - nvim

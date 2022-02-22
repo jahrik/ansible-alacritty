@@ -1,0 +1,19 @@
+---
+- name: Install dependencies
+  package:
+    name:
+      - dirmngr
+      # - libxcursor-dev
+      # - libxrandr-dev
+      # - libxi-dev
+      # - libx11-xcb-dev
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+
+- name: Add ppa:aslatter/ppa
+  become: true
+  apt_repository:
+    repo: 'ppa:aslatter/ppa'
+    update_cache: true
