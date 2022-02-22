@@ -13,7 +13,7 @@
 - name: Create ~/.config/alacritty directory
   become: false
   file:
-    path: ~/.config/alacritty/alacritty.yml
+    path: ~/.config/alacritty
     state: directory
 
 - name: Generate alacritty config files
