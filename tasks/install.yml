@@ -1,28 +1,30 @@
 ---
 - name: Include debian
-  include_tasks: debian.yml
+  ansible.builtin.include_tasks: debian.yml
   when: ansible_os_family == 'Debian'
 
 - name: Include archlinux
-  include_tasks: archlinux.yml
+  ansible.builtin.include_tasks: archlinux.yml
   when: ansible_os_family == 'Archlinux'
 
 - name: Install alacritty
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - alacritty
     state: present
-  when: ansible_os_family not in ['Archlinux', 'Debian']
+  when: ansible_os_family != 'Archlinux'
 
 - name: Create ~/.config/alacritty directory
   become: false
-  file:
+  ansible.builtin.file:
     path: ~/.config/alacritty
     state: directory
+    mode: '0755'
 
 - name: Generate alacritty config files
   become: false
-  template:
+  ansible.builtin.template:
     src: alacritty.yml.j2
     dest: ~/.config/alacritty/alacritty.yml
+    mode: '0644'

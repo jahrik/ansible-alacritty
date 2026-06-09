@@ -1,13 +1,13 @@
 ---
 - name: Uninstall alacritty
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - alacritty
     state: absent
 
 - name: Destroy ~/.config/alacritty directory
   become: false
-  file:
+  ansible.builtin.file:
     path: ~/.config/alacritty
     state: absent
