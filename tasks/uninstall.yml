@@ -1,17 +1,13 @@
 ---
-- name: Uninstall neovim
+- name: Uninstall alacritty
   become: true
   package:
     name:
-      - neovim
+      - alacritty
     state: absent
-  tags:
-    - nvim
 
-- name: Destroy ~/.config/nvim directory
+- name: Destroy ~/.config/alacritty directory
   become: false
   file:
-    path: ~/.config/nvim
+    path: ~/.config/alacritty
     state: absent
-  tags:
-    - nvim
