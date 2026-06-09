@@ -3,12 +3,17 @@
   include_tasks: debian.yml
   when: ansible_os_family == 'Debian'
 
+- name: Include archlinux
+  include_tasks: archlinux.yml
+  when: ansible_os_family == 'Archlinux'
+
 - name: Install alacritty
   become: true
   package:
     name:
       - alacritty
     state: present
+  when: ansible_os_family not in ['Archlinux', 'Debian']
 
 - name: Create ~/.config/alacritty directory
   become: false
