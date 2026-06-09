@@ -13,7 +13,7 @@
     name:
       - alacritty
     state: present
-  when: ansible_os_family not in ['Archlinux', 'Debian']
+  when: ansible_os_family != 'Archlinux'
 
 - name: Create ~/.config/alacritty directory
   become: false
