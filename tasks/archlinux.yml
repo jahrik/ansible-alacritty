@@ -5,3 +5,4 @@
     name:
       - alacritty
     state: present
+    update_cache: true
