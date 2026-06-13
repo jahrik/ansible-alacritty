@@ -1,15 +1,7 @@
 ---
-- name: Install dependencies
-  become: true
-  ansible.builtin.package:
-    name:
-      - dirmngr
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
-- name: Add ppa:aslatter/ppa
+- name: Enable universe repository
   become: true
   ansible.builtin.apt_repository:
-    repo: 'ppa:aslatter/ppa'
+    repo: 'deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe'
+    state: present
     update_cache: true
