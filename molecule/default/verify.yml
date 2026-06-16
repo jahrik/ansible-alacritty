@@ -15,10 +15,10 @@
 
     - name: Check alacritty config file
       ansible.builtin.stat:
-        path: ~/.config/alacritty/alacritty.yml
+        path: ~/.config/alacritty/alacritty.toml
       register: alacritty_cfg
 
     - name: Assert alacritty config exists
       ansible.builtin.assert:
         that: alacritty_cfg.stat.exists
-        fail_msg: "alacritty config not found at ~/.config/alacritty/alacritty.yml"
+        fail_msg: "alacritty config not found at ~/.config/alacritty/alacritty.toml"

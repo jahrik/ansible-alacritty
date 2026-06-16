@@ -4,3 +4,10 @@ alacritty:
   font:
     size: 16
     family: DejaVuSansMono Nerd Font Mono
+
+# Pinned to a version known to run against SteamOS's glibc. Newer
+# alacritty builds from the Arch repos require a newer glibc than
+# SteamOS ships, and SteamOS's read-only rootfs blocks installing via
+# pacman, so the binary is extracted from an archived Arch package
+# instead. Bump this once SteamOS's glibc catches up.
+alacritty_steamos_version: "0.16.1"
