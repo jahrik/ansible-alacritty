@@ -20,16 +20,16 @@
         fail_msg: "alacritty binary not found at ~/.local/bin/alacritty"
       when: steamos_release.stat.exists
 
-    - name: Check alacritty binary at /usr/bin/alacritty
-      ansible.builtin.stat:
-        path: /usr/bin/alacritty
+    - name: Check alacritty binary on PATH
+      ansible.builtin.command: which alacritty
       register: alacritty_bin
+      changed_when: false
       when: not steamos_release.stat.exists
 
     - name: Assert alacritty binary is installed
       ansible.builtin.assert:
-        that: alacritty_bin.stat.exists
-        fail_msg: "alacritty binary not found at /usr/bin/alacritty"
+        that: alacritty_bin.rc == 0
+        fail_msg: "alacritty binary not found on PATH"
       when: not steamos_release.stat.exists
 
     - name: Check alacritty config file

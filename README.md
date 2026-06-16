@@ -2,7 +2,7 @@
 
 [![CICD](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml/badge.svg)](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml)
 
-Installs [Alacritty](https://github.com/alacritty/alacritty) and deploys a TOML config (Srcery colorscheme) to `~/.config/alacritty/alacritty.toml`. Supports Arch Linux, Debian/Ubuntu, and Steam Deck.
+Installs [Alacritty](https://github.com/alacritty/alacritty) and deploys a TOML config (Srcery colorscheme) to `~/.config/alacritty/alacritty.toml`. Supports Arch Linux, Debian/Ubuntu, macOS, and Steam Deck.
 
 Configuration is based on [en0's dotfiles](https://github.com/en0/dotfiles).
 
@@ -12,6 +12,7 @@ Configuration is based on [en0's dotfiles](https://github.com/en0/dotfiles).
 |---|---|
 | Arch Linux | `pacman` |
 | Debian / Ubuntu | `apt`, after enabling the `universe` repository |
+| macOS | Homebrew cask (`become: false`) |
 | Steam Deck / SteamOS | Static binary extracted from an archived Arch package, to `~/.local/bin` |
 
 Steam Deck is detected automatically via `/etc/steamos-release`. Because SteamOS has a read-only root filesystem and no compiler toolchain, the binary is extracted directly from an `.pkg.tar.zst` Arch package file (no `pacman`, no root, no build) and installed entirely under the user's home directory. A desktop entry and icon are deployed to `~/.local/share/applications` and `~/.local/share/icons` so Alacritty shows up in KDE's app launcher, and `kbuildsycoca6` is run (if present) to refresh the launcher cache immediately.
@@ -63,7 +64,7 @@ Steam Deck scenario (Arch container with `/etc/steamos-release` stubbed):
 molecule test -s steamdeck
 ```
 
-Localhost scenario (runs directly against the local machine, e.g. a real Steam Deck):
+Localhost scenario (runs directly against the local machine, e.g. a real Steam Deck or macOS):
 
 ```bash
 molecule converge -s localhost

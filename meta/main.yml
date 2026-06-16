@@ -18,6 +18,9 @@ galaxy_info:
         - noble
         - jammy
         - focal
+    - name: macOS
+      versions:
+        - all
     - name: GenericLinux
       versions:
         - all
