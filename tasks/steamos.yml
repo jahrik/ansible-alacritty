@@ -1,0 +1,66 @@
+---
+- name: Ensure ~/.local/bin exists
+  become: false
+  ansible.builtin.file:
+    path: ~/.local/bin
+    state: directory
+    mode: '0755'
+
+- name: Download alacritty package
+  become: false
+  ansible.builtin.get_url:
+    url: "https://archive.archlinux.org/packages/a/alacritty/alacritty-{{ alacritty_steamos_version }}-1-x86_64.pkg.tar.zst"
+    dest: "/tmp/alacritty-{{ alacritty_steamos_version }}.pkg.tar.zst"
+    mode: '0644'
+
+- name: Extract alacritty binary
+  become: false
+  ansible.builtin.unarchive:
+    src: "/tmp/alacritty-{{ alacritty_steamos_version }}.pkg.tar.zst"
+    dest: ~/.local/bin
+    remote_src: true
+    extra_opts:
+      - --strip-components=2
+      - usr/bin/alacritty
+    creates: ~/.local/bin/alacritty
+
+- name: Create ~/.local/share/applications directory
+  become: false
+  ansible.builtin.file:
+    path: ~/.local/share/applications
+    state: directory
+    mode: '0755'
+
+- name: Create ~/.local/share/icons directory
+  become: false
+  ansible.builtin.file:
+    path: ~/.local/share/icons
+    state: directory
+    mode: '0755'
+
+- name: Deploy alacritty icon
+  become: false
+  ansible.builtin.copy:
+    src: Alacritty.svg
+    dest: ~/.local/share/icons/Alacritty.svg
+    mode: '0644'
+
+- name: Deploy alacritty desktop entry
+  become: false
+  ansible.builtin.template:
+    src: alacritty.desktop.j2
+    dest: ~/.local/share/applications/Alacritty.desktop
+    mode: '0644'
+  register: alacritty_desktop_entry
+
+- name: Check for kbuildsycoca6
+  ansible.builtin.command: which kbuildsycoca6
+  register: kbuildsycoca6
+  changed_when: false
+  failed_when: false
+
+- name: Refresh KDE desktop database
+  become: false
+  ansible.builtin.command: kbuildsycoca6
+  changed_when: false
+  when: alacritty_desktop_entry.changed and kbuildsycoca6.rc == 0

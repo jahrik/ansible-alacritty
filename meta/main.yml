@@ -2,17 +2,28 @@ galaxy_info:
   role_name: alacritty
   author: jahrik
   namespace: jahrik
-  description: Install alacritty and configs
-  company: https://homelab.business
-  issue_tracker_url: https://github.com/jahrik/ansible-vim/issues
+  description: Install Alacritty and deploy a TOML config, with native Steam Deck / SteamOS support
+  issue_tracker_url: https://github.com/jahrik/ansible-alacritty/issues
   license: GPLv2
-  min_ansible_version: '2.1'
+  min_ansible_version: "2.15"
   platforms:
     - name: ArchLinux
       versions:
         - all
+    - name: Debian
+      versions:
+        - all
     - name: Ubuntu
       versions:
+        - noble
+        - jammy
         - focal
+    - name: GenericLinux
+      versions:
+        - all
   galaxy_tags:
     - alacritty
+    - terminal
+    - steamdeck
+    - steamos
+dependencies: []

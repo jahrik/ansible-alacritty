@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+TryExec={{ ansible_env.HOME }}/.local/bin/alacritty
+Exec={{ ansible_env.HOME }}/.local/bin/alacritty
+Icon=Alacritty
+Terminal=false
+Categories=System;TerminalEmulator;
+
+Name=Alacritty
+GenericName=Terminal
+Comment=A fast, cross-platform, OpenGL terminal emulator
+StartupNotify=true
+StartupWMClass=Alacritty
+Actions=New;
+
+[Desktop Action New]
+Name=New Terminal
+Exec={{ ansible_env.HOME }}/.local/bin/alacritty

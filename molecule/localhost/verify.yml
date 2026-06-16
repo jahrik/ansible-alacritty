@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check for SteamOS
+      ansible.builtin.stat:
+        path: /etc/steamos-release
+      register: steamos_release
+
+    - name: Check alacritty binary at ~/.local/bin/alacritty
+      ansible.builtin.stat:
+        path: ~/.local/bin/alacritty
+      register: alacritty_local_bin
+      when: steamos_release.stat.exists
+
+    - name: Assert alacritty binary is installed
+      ansible.builtin.assert:
+        that: alacritty_local_bin.stat.exists
+        fail_msg: "alacritty binary not found at ~/.local/bin/alacritty"
+      when: steamos_release.stat.exists
+
+    - name: Check alacritty binary at /usr/bin/alacritty
+      ansible.builtin.stat:
+        path: /usr/bin/alacritty
+      register: alacritty_bin
+      when: not steamos_release.stat.exists
+
+    - name: Assert alacritty binary is installed
+      ansible.builtin.assert:
+        that: alacritty_bin.stat.exists
+        fail_msg: "alacritty binary not found at /usr/bin/alacritty"
+      when: not steamos_release.stat.exists
+
+    - name: Check alacritty config file
+      ansible.builtin.stat:
+        path: ~/.config/alacritty/alacritty.toml
+      register: alacritty_cfg
+
+    - name: Assert alacritty config exists
+      ansible.builtin.assert:
+        that: alacritty_cfg.stat.exists
+        fail_msg: "alacritty config not found at ~/.config/alacritty/alacritty.toml"
