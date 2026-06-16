@@ -15,13 +15,20 @@
     - ~/.local/share/icons/Alacritty.svg
   when: steamos_release.stat.exists
 
+- name: Uninstall alacritty (macOS)
+  become: false
+  community.general.homebrew_cask:
+    name: alacritty
+    state: absent
+  when: ansible_os_family == 'Darwin'
+
 - name: Uninstall alacritty
   become: true
   ansible.builtin.package:
     name:
       - alacritty
     state: absent
-  when: not steamos_release.stat.exists
+  when: ansible_os_family not in ['Darwin'] and not steamos_release.stat.exists
 
 - name: Destroy ~/.config/alacritty directory
   become: false

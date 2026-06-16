@@ -16,13 +16,17 @@
   ansible.builtin.include_tasks: archlinux.yml
   when: ansible_os_family == 'Archlinux' and not steamos_release.stat.exists
 
+- name: Include darwin
+  ansible.builtin.include_tasks: darwin.yml
+  when: ansible_os_family == 'Darwin'
+
 - name: Install alacritty
   become: true
   ansible.builtin.package:
     name:
       - alacritty
     state: present
-  when: ansible_os_family != 'Archlinux'
+  when: ansible_os_family not in ['Archlinux', 'Darwin']
 
 - name: Create ~/.config/alacritty directory
   become: false

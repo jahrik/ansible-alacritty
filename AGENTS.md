@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Role Overview
 
-Ansible role that installs [Alacritty](https://github.com/alacritty/alacritty) and deploys a TOML config. Supports Arch Linux, Debian/Ubuntu, and Steam Deck (SteamOS).
+Ansible role that installs [Alacritty](https://github.com/alacritty/alacritty) and deploys a TOML config. Supports Arch Linux, Debian/Ubuntu, macOS, and Steam Deck (SteamOS).
 
 ## Key Variables (`defaults/main.yml`)
 
@@ -22,20 +22,22 @@ Ansible role that installs [Alacritty](https://github.com/alacritty/alacritty) a
 **install.yml:**
 1. Stat `/etc/steamos-release`
 2. If it exists, include `steamos.yml` (SteamOS code path, takes priority over the generic Arch path)
-3. Else include `debian.yml` (Debian family) or `archlinux.yml` (Arch family, non-SteamOS)
-4. Install the `alacritty` package via `ansible.builtin.package` for non-Arch families (Arch installs happen in `archlinux.yml`/`steamos.yml` instead)
+3. Else include `debian.yml` (Debian family), `archlinux.yml` (Arch family, non-SteamOS), or `darwin.yml` (Darwin family)
+4. Install the `alacritty` package via `ansible.builtin.package` for families not handled above (Arch, Darwin, and SteamOS installs happen in their own task files instead)
 5. Template `~/.config/alacritty/alacritty.toml` from `templates/alacritty.toml.j2`
 
 **debian.yml:** enables the `universe` apt repository (Alacritty itself installs via the generic `package` task in `install.yml`)
 
 **archlinux.yml:** `pacman` install of `alacritty`
 
+**darwin.yml:** `community.general.homebrew_cask` install of the `alacritty` cask, `become: false`
+
 **steamos.yml:** No `become` anywhere (SteamOS root is read-only and there's no compiler toolchain or Flatpak listing for Alacritty).
 - Downloads `alacritty-{{ alacritty_steamos_version }}-1-x86_64.pkg.tar.zst` from `archive.archlinux.org` — this is a plain zstd tarball, not installed via `pacman`
 - Extracts just `usr/bin/alacritty` from it into `~/.local/bin/alacritty` via `unarchive` (`remote_src: true`, `--strip-components=2`)
 - Deploys `files/Alacritty.svg` to `~/.local/share/icons/` and `templates/alacritty.desktop.j2` to `~/.local/share/applications/`, then runs `kbuildsycoca6` (if present) to refresh KDE's launcher cache so the entry shows up immediately
 
-**uninstall.yml:** removes the SteamOS binary/desktop entry/icon (when `/etc/steamos-release` exists) or the package via `ansible.builtin.package` (everywhere else), then always removes `~/.config/alacritty`
+**uninstall.yml:** removes the SteamOS binary/desktop entry/icon (when `/etc/steamos-release` exists), uninstalls the Homebrew cask (Darwin), or removes the package via `ansible.builtin.package` (everywhere else), then always removes `~/.config/alacritty`
 
 ## Why the SteamOS version is pinned
 
@@ -52,7 +54,7 @@ molecule converge
 molecule destroy
 ```
 
-Localhost scenario (runs directly against the local machine — used to validate the SteamOS path on real hardware):
+Localhost scenario (runs directly against the local machine — used to validate the SteamOS path on real hardware, and used in CI on the macOS runner since Docker isn't available there):
 
 ```bash
 molecule converge -s localhost
@@ -64,4 +66,5 @@ molecule verify -s localhost
 - **Lint**: yamllint + ansible-lint
 - **Molecule**: Ubuntu + Arch Linux via Docker (`molecule/default`)
 - **Steam Deck**: Arch container with `/etc/steamos-release` stubbed (`molecule/steamdeck`)
+- **macOS**: `ansible-playbook` against the GHA runner directly (`macos-latest`), using `molecule/localhost`
 - **Release**: publishes to Ansible Galaxy on merge to `main`

@@ -70,11 +70,44 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
 
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v5
+        with:
+          path: jahrik.alacritty
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip3 install ansible
+
+      - name: Install collections
+        run: ansible-galaxy collection install community.general
+
+      - name: Run converge
+        working-directory: jahrik.alacritty
+        env:
+          ANSIBLE_ROLES_PATH: ${{ github.workspace }}
+        run: ansible-playbook molecule/localhost/converge.yml -i "localhost," -c local
+
+      - name: Run verify
+        working-directory: jahrik.alacritty
+        env:
+          ANSIBLE_ROLES_PATH: ${{ github.workspace }}
+        run: ansible-playbook molecule/localhost/verify.yml -i "localhost," -c local
+
   release:
     name: Release
     needs:
       - molecule
       - steamdeck
+      - macos
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
