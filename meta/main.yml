@@ -29,4 +29,5 @@ galaxy_info:
     - terminal
     - steamdeck
     - steamos
-dependencies: []
+dependencies:
+  - role: jahrik.nerd_fonts
