@@ -1,9 +1,4 @@
 ---
-- name: Check for SteamOS
-  ansible.builtin.stat:
-    path: /etc/steamos-release
-  register: steamos_release
-
 - name: Remove alacritty binary, desktop entry, and icon (SteamOS)
   become: false
   ansible.builtin.file:
@@ -13,7 +8,7 @@
     - ~/.local/bin/alacritty
     - ~/.local/share/applications/Alacritty.desktop
     - ~/.local/share/icons/Alacritty.svg
-  when: steamos_release.stat.exists
+  when: ansible_distribution == 'SteamOS'
 
 - name: Uninstall alacritty (macOS)
   become: false
@@ -28,7 +23,7 @@
     name:
       - alacritty
     state: absent
-  when: ansible_os_family not in ['Darwin'] and not steamos_release.stat.exists
+  when: ansible_os_family not in ['Darwin'] and ansible_distribution != 'SteamOS'
 
 - name: Destroy ~/.config/alacritty directory
   become: false
