@@ -1,20 +1,15 @@
 ---
-- name: Check for SteamOS
-  ansible.builtin.stat:
-    path: /etc/steamos-release
-  register: steamos_release
-
 - name: Include steamos
   ansible.builtin.include_tasks: steamos.yml
-  when: steamos_release.stat.exists
+  when: ansible_distribution == 'SteamOS'
 
 - name: Include debian
   ansible.builtin.include_tasks: debian.yml
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and ansible_distribution != 'SteamOS'
 
 - name: Include archlinux
   ansible.builtin.include_tasks: archlinux.yml
-  when: ansible_os_family == 'Archlinux' and not steamos_release.stat.exists
+  when: ansible_os_family == 'Archlinux' and ansible_distribution != 'SteamOS'
 
 - name: Include darwin
   ansible.builtin.include_tasks: darwin.yml
@@ -26,7 +21,7 @@
     name:
       - alacritty
     state: present
-  when: ansible_os_family not in ['Archlinux', 'Darwin']
+  when: ansible_os_family not in ['Archlinux', 'Darwin'] and ansible_distribution != 'SteamOS'
 
 - name: Create ~/.config/alacritty directory
   become: false

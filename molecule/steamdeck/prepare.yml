@@ -2,9 +2,36 @@
 - name: Prepare
   hosts: all
   tasks:
-    - name: Create /etc/steamos-release to trigger Steam Deck detection
+    - name: Disable pacman internal sandbox
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/pacman.conf
+        line: "DisableSandbox"
+        insertafter: "^\\[options\\]"
+
+    - name: Install prerequisites (curl, unzip)
+      become: true
+      community.general.pacman:
+        name:
+          - curl
+          - unzip
+        state: present
+        update_cache: true
+
+    - name: Remove /etc/arch-release to allow SteamOS detection
       become: true
       ansible.builtin.file:
-        path: /etc/steamos-release
-        state: touch
+        path: /etc/arch-release
+        state: absent
+
+    - name: Simulate SteamOS /etc/os-release
+      become: true
+      ansible.builtin.copy:
+        content: |
+          ID=steamos
+          ID_LIKE=arch
+          NAME="SteamOS"
+          PRETTY_NAME="SteamOS"
+          VERSION_ID="3.6"
+        dest: /etc/os-release
         mode: "0644"
