@@ -19,4 +19,3 @@
           VERSION_ID="3.6"
         dest: /etc/os-release
         mode: "0644"
-
