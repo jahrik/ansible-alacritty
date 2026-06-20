@@ -13,6 +13,17 @@
         that: alacritty_bin.stat.exists
         fail_msg: "alacritty binary not found at /usr/bin/alacritty"
 
+    - name: Run alacritty --version
+      ansible.builtin.command: alacritty --version
+      register: alacritty_version
+      changed_when: false
+      failed_when: false
+
+    - name: Assert alacritty version output
+      ansible.builtin.assert:
+        that: alacritty_version.rc == 0 and 'alacritty' in alacritty_version.stdout | lower
+        fail_msg: "alacritty --version failed: {{ alacritty_version.stderr }}"
+
     - name: Check alacritty config file
       ansible.builtin.stat:
         path: ~/.config/alacritty/alacritty.toml
