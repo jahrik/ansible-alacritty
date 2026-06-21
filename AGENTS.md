@@ -44,6 +44,8 @@ SteamOS's root filesystem is read-only and ships no compiler toolchain, ruling o
 ## Testing
 
 ```bash
+uv sync
+source .venv/bin/activate
 yamllint .
 ansible-lint
 molecule test
