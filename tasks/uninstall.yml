@@ -8,7 +8,7 @@
     - ~/.local/bin/alacritty
     - ~/.local/share/applications/Alacritty.desktop
     - ~/.local/share/icons/Alacritty.svg
-  when: ansible_distribution == 'SteamOS'
+  when: ansible_distribution_release == 'holo'
 
 - name: Uninstall alacritty (macOS)
   become: false
@@ -23,7 +23,7 @@
     name:
       - alacritty
     state: absent
-  when: ansible_os_family not in ['Darwin'] and ansible_distribution != 'SteamOS'
+  when: ansible_os_family not in ['Darwin'] and ansible_distribution_release != 'holo'
 
 - name: Destroy ~/.config/alacritty directory
   become: false

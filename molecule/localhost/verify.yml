@@ -7,25 +7,25 @@
       ansible.builtin.stat:
         path: ~/.local/bin/alacritty
       register: alacritty_local_bin
-      when: ansible_distribution == 'SteamOS'
+      when: ansible_distribution_release == 'holo'
 
     - name: Assert alacritty binary is installed
       ansible.builtin.assert:
         that: alacritty_local_bin.stat.exists
         fail_msg: "alacritty binary not found at ~/.local/bin/alacritty"
-      when: ansible_distribution == 'SteamOS'
+      when: ansible_distribution_release == 'holo'
 
     - name: Check alacritty binary on PATH
       ansible.builtin.command: which alacritty
       register: alacritty_bin
       changed_when: false
-      when: ansible_distribution != 'SteamOS'
+      when: ansible_distribution_release != 'holo'
 
     - name: Assert alacritty binary is installed
       ansible.builtin.assert:
         that: alacritty_bin.rc == 0
         fail_msg: "alacritty binary not found on PATH"
-      when: ansible_distribution != 'SteamOS'
+      when: ansible_distribution_release != 'holo'
 
     - name: Check alacritty config file
       ansible.builtin.stat:
