@@ -1,10 +1,9 @@
-# ansible-alacritty
+# ALACRITTY
 
 [![CICD](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml/badge.svg)](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-jahrik.alacritty-blue?logo=ansible)](https://galaxy.ansible.com/ui/standalone/roles/jahrik/alacritty/)
 
-Installs [Alacritty](https://github.com/alacritty/alacritty) and deploys a TOML config (Srcery colorscheme) to `~/.config/alacritty/alacritty.toml`. Supports Arch Linux, Debian/Ubuntu, macOS, and Steam Deck.
-
-Configuration is based on [en0's dotfiles](https://github.com/en0/dotfiles).
+Installs [Alacritty](https://alacritty.org/) ([GitHub](https://github.com/alacritty/alacritty)) terminal emulator and deploys a TOML config with the [Srcery](https://srcery.sh/) colorscheme to `~/.config/alacritty/alacritty.toml`. Supports Arch Linux, Debian/Ubuntu, macOS, and Steam Deck. Font rendering requires [DejaVu Sans Mono Nerd Font](https://github.com/ryanoasis/nerd-fonts), installed automatically via the `jahrik.nerd_fonts` dependency.
 
 ## OS Support
 
@@ -13,9 +12,9 @@ Configuration is based on [en0's dotfiles](https://github.com/en0/dotfiles).
 | Arch Linux | `pacman` |
 | Debian / Ubuntu | `apt`, after enabling the `universe` repository |
 | macOS | Homebrew cask (`become: false`) |
-| Steam Deck / SteamOS | Static binary extracted from an archived Arch package, to `~/.local/bin` |
+| Steam Deck / SteamOS | Static binary extracted from an archived Arch `.pkg.tar.zst` package to `~/.local/bin` |
 
-Steam Deck is detected automatically via `/etc/steamos-release`. Because SteamOS has a read-only root filesystem and no compiler toolchain, the binary is extracted directly from an `.pkg.tar.zst` Arch package file (no `pacman`, no root, no build) and installed entirely under the user's home directory. A desktop entry and icon are deployed to `~/.local/share/applications` and `~/.local/share/icons` so Alacritty shows up in KDE's app launcher, and `kbuildsycoca6` is run (if present) to refresh the launcher cache immediately.
+SteamOS has a read-only root filesystem with no `pacman` write access and no compiler toolchain, ruling out both package managers and building from source. The binary is extracted directly from an archived Arch package file — no root, no build required. A desktop entry and icon are deployed to `~/.local/share/applications` and `~/.local/share/icons` so Alacritty appears in KDE's app launcher, and `kbuildsycoca6` is run (if present) to refresh the launcher cache immediately. The SteamOS version is pinned to a build compatible with SteamOS's glibc; bump `alacritty_steamos_version` once SteamOS ships a newer glibc.
 
 ## Role Variables
 
@@ -24,7 +23,7 @@ Steam Deck is detected automatically via `/etc/steamos-release`. Because SteamOS
 | `install` | `true` | Set to `false` to uninstall Alacritty and remove `~/.config/alacritty` |
 | `alacritty.font.size` | `16` | Font size in the generated config |
 | `alacritty.font.family` | `DejaVuSansMono Nerd Font Mono` | Font family |
-| `alacritty_steamos_version` | `0.16.1` | Alacritty version pulled from `archive.archlinux.org` on Steam Deck. Pinned to a build compatible with SteamOS's glibc; bump once SteamOS's glibc catches up to newer Alacritty builds |
+| `alacritty_steamos_version` | `0.16.1` | Alacritty version pulled from `archive.archlinux.org` on Steam Deck; pinned for glibc compatibility |
 
 ## Example Playbook
 
