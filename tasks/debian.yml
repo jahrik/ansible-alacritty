@@ -5,3 +5,4 @@
     repo: 'deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe'
     state: present
     update_cache: true
+  when: ansible_os_family == 'Debian'

@@ -4,3 +4,4 @@
   community.general.homebrew_cask:
     name: alacritty
     state: present
+  when: ansible_os_family == 'Darwin'

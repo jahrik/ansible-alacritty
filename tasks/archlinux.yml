@@ -1,8 +1,15 @@
 ---
+- name: Update pacman cache
+  become: true
+  community.general.pacman:
+    update_cache: true
+  changed_when: false
+  when: ansible_os_family == 'Archlinux'
+
 - name: Install alacritty
   become: true
   community.general.pacman:
     name:
       - alacritty
     state: present
-    update_cache: true
+  when: ansible_os_family == 'Archlinux'

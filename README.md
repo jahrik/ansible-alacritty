@@ -1,4 +1,4 @@
-# ALACRITTY
+# ansible-alacritty
 
 [![CICD](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml/badge.svg)](https://github.com/jahrik/ansible-alacritty/actions/workflows/cicd.yml)
 [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-jahrik.alacritty-blue?logo=ansible)](https://galaxy.ansible.com/ui/standalone/roles/jahrik/alacritty/)
