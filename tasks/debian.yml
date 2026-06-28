@@ -2,6 +2,6 @@
 - name: Enable universe repository
   become: true
   ansible.builtin.apt_repository:
-    repo: 'deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe'
+    repo: 'deb http://archive.ubuntu.com/ubuntu {{ ansible_facts["distribution_release"] }} universe'
     state: present
     update_cache: true
