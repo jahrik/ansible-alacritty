@@ -8,14 +8,14 @@
     - ~/.local/bin/alacritty
     - ~/.local/share/applications/Alacritty.desktop
     - ~/.local/share/icons/Alacritty.svg
-  when: ansible_distribution_release == 'holo'
+  when: ansible_facts['distribution_release'] == 'holo'
 
 - name: Uninstall alacritty (macOS)
   become: false
   community.general.homebrew_cask:
     name: alacritty
     state: absent
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Uninstall alacritty
   become: true
@@ -23,7 +23,7 @@
     name:
       - alacritty
     state: absent
-  when: ansible_os_family not in ['Darwin'] and ansible_distribution_release != 'holo'
+  when: ansible_facts['os_family'] not in ['Darwin'] and ansible_facts['distribution_release'] != 'holo'
 
 - name: Destroy ~/.config/alacritty directory
   become: false

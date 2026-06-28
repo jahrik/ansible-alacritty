@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-TryExec={{ ansible_env.HOME }}/.local/bin/alacritty
-Exec={{ ansible_env.HOME }}/.local/bin/alacritty
+TryExec={{ ansible_facts['env']['HOME'] }}/.local/bin/alacritty
+Exec={{ ansible_facts['env']['HOME'] }}/.local/bin/alacritty
 Icon=Alacritty
 Terminal=false
 Categories=System;TerminalEmulator;
@@ -15,4 +15,4 @@ Actions=New;
 
 [Desktop Action New]
 Name=New Terminal
-Exec={{ ansible_env.HOME }}/.local/bin/alacritty
+Exec={{ ansible_facts['env']['HOME'] }}/.local/bin/alacritty
