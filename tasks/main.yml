@@ -1,13 +1,23 @@
 ---
 - name: Install alacritty
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - alacritty
+        - alacritty:install
   when: install | default(true) | bool
   tags:
     - alacritty
     - alacritty:install
 
 - name: Uninstall alacritty
-  ansible.builtin.include_tasks: uninstall.yml
+  ansible.builtin.include_tasks:
+    file: uninstall.yml
+    apply:
+      tags:
+        - alacritty
+        - alacritty:uninstall
   when: not (install | default(true) | bool)
   tags:
     - alacritty
