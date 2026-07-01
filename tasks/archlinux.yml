@@ -4,5 +4,4 @@
   community.general.pacman:
     name:
       - alacritty
-    state: present
     update_cache: true

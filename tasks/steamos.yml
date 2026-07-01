@@ -58,6 +58,7 @@
   register: kbuildsycoca6
   changed_when: false
   failed_when: false
+  check_mode: false
 
 - name: Refresh KDE desktop database
   become: false

@@ -3,4 +3,3 @@
   become: false
   community.general.homebrew_cask:
     name: alacritty
-    state: present
