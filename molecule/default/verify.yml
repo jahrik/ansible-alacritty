@@ -33,3 +33,33 @@
       ansible.builtin.assert:
         that: alacritty_cfg.stat.exists
         fail_msg: "alacritty config not found at ~/.config/alacritty/alacritty.toml"
+
+- name: Verify uninstall
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Run jahrik.alacritty with install false
+      ansible.builtin.include_role:
+        name: jahrik.alacritty
+      vars:
+        install: false
+
+    - name: Check alacritty binary removed
+      ansible.builtin.stat:
+        path: /usr/bin/alacritty
+      register: alacritty_bin_removed
+
+    - name: Assert alacritty binary is removed
+      ansible.builtin.assert:
+        that: not alacritty_bin_removed.stat.exists
+        fail_msg: "alacritty binary still present at /usr/bin/alacritty after uninstall"
+
+    - name: Check alacritty config removed
+      ansible.builtin.stat:
+        path: ~/.config/alacritty/alacritty.toml
+      register: alacritty_cfg_removed
+
+    - name: Assert alacritty config is removed
+      ansible.builtin.assert:
+        that: not alacritty_cfg_removed.stat.exists
+        fail_msg: "alacritty config still present at ~/.config/alacritty/alacritty.toml after uninstall"

@@ -1,0 +1,36 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure Alacritty
+    options:
+      install:
+        type: bool
+        default: true
+        description: Set to false to uninstall Alacritty and remove its config
+      alacritty:
+        type: dict
+        description: Values rendered into the generated alacritty.toml config
+        default:
+          font:
+            size: 16
+            family: DejaVuSansMono Nerd Font Mono
+        options:
+          font:
+            type: dict
+            description: Font settings rendered into the generated config
+            default:
+              size: 16
+              family: DejaVuSansMono Nerd Font Mono
+            options:
+              size:
+                type: int
+                default: 16
+                description: Font size in the generated config
+              family:
+                type: str
+                default: DejaVuSansMono Nerd Font Mono
+                description: Font family in the generated config
+      alacritty_steamos_version:
+        type: str
+        default: "0.16.1"
+        description: Pinned Arch package version extracted on SteamOS for glibc compatibility
