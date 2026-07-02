@@ -47,6 +47,21 @@ Override these variables to customize the installation:
 | `alacritty.font.family` | `DejaVuSansMono Nerd Font Mono` | Font family in the generated config. |
 | `alacritty_steamos_version` | `0.16.1` | Pinned version for SteamOS glibc compatibility. |
 
+## Tags
+
+Run or skip parts of the role with tags:
+
+```bash
+ansible-playbook playbook.yml --tags alacritty:install
+ansible-playbook playbook.yml --skip-tags alacritty:uninstall
+```
+
+| Tag | Scope |
+|---|---|
+| `alacritty` | All role tasks |
+| `alacritty:install` | Install path only |
+| `alacritty:uninstall` | Uninstall path only |
+
 ## Testing
 
 ```bash
