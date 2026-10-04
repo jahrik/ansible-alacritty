@@ -14,7 +14,7 @@ Ansible role to install and configure [Alacritty](https://alacritty.org/) with t
 
 - **Arch Linux:** Installed via `pacman`.
 - **Debian/Ubuntu:** Enables the `universe` repo, installs via `apt`.
-- **macOS:** Installed via `homebrew_cask` (`become: false`).
+- **macOS:** Installed from the upstream release DMG (`alacritty_macos_version`, checksum-verified) into `/Applications`, with the binary linked into Homebrew's `bin`. The Homebrew cask was disabled on 2026-09-01 for failing the Gatekeeper check.
 - **SteamOS:**
   - The root filesystem is read-only without a compiler toolchain.
   - Alacritty is extracted from an archived Arch `.pkg.tar.zst` directly to `~/.local/bin/alacritty`.
