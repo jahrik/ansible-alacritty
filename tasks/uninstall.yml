@@ -10,11 +10,21 @@
     - ~/.local/share/icons/Alacritty.svg
   when: ansible_facts['distribution_release'] == 'holo'
 
-- name: Uninstall alacritty (macOS)
+- name: Find Homebrew prefix (macOS)
+  ansible.builtin.command: brew --prefix
+  register: alacritty_brew_prefix
+  changed_when: false
+  check_mode: false
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Remove Alacritty.app and its binary link (macOS)
   become: false
-  community.general.homebrew_cask:
-    name: alacritty
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: absent
+  loop:
+    - /Applications/Alacritty.app
+    - "{{ alacritty_brew_prefix.stdout }}/bin/alacritty"
   when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Uninstall alacritty

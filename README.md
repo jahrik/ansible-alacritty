@@ -13,7 +13,7 @@ Depends on `jahrik.nerd_fonts` to install [DejaVu Sans Mono Nerd Font](https://g
 |---|---|
 | **Arch Linux** | `pacman` |
 | **Debian / Ubuntu** | `apt` (universe repository) |
-| **macOS** | Homebrew cask (`become: false`) |
+| **macOS** | Upstream release DMG into `/Applications`, binary linked into Homebrew `bin` (`become: false`) |
 | **SteamOS** | Extracts archived Arch `.pkg.tar.zst` to `~/.local/bin` |
 
 ## Usage
@@ -46,6 +46,8 @@ Override these variables to customize the installation:
 | `alacritty.font.size` | `16` | Font size in the generated config. |
 | `alacritty.font.family` | `DejaVuSansMono Nerd Font Mono` | Font family in the generated config. |
 | `alacritty_steamos_version` | `0.16.1` | Pinned version for SteamOS glibc compatibility. |
+| `alacritty_macos_version` | `0.17.0` | Upstream release installed from its DMG on macOS. |
+| `alacritty_macos_sha256` | (v0.17.0 DMG sha256) | Checksum of the DMG; bump together with the version. |
 
 ## Tags
 

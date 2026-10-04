@@ -1,5 +1,57 @@
 ---
-- name: Install alacritty (macOS)
+# Homebrew disabled the alacritty cask on 2026-09-01 (it fails the macOS
+# Gatekeeper check), so install the upstream release DMG instead.
+- name: Read installed alacritty version (macOS)
+  ansible.builtin.command: >-
+    defaults read /Applications/Alacritty.app/Contents/Info.plist CFBundleShortVersionString
+  register: alacritty_macos_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Install alacritty from release DMG (macOS)
+  when: alacritty_macos_installed.stdout | default('') != alacritty_macos_version
+  block:
+    - name: Download alacritty DMG
+      become: false
+      ansible.builtin.get_url:
+        url: "https://github.com/alacritty/alacritty/releases/download/v{{ alacritty_macos_version }}/Alacritty-v{{ alacritty_macos_version }}.dmg"
+        dest: "/tmp/Alacritty-v{{ alacritty_macos_version }}.dmg"
+        checksum: "sha256:{{ alacritty_macos_sha256 }}"
+        mode: '0644'
+
+    - name: Mount alacritty DMG
+      ansible.builtin.command: >-
+        hdiutil attach -nobrowse -readonly -mountpoint /tmp/alacritty-dmg
+        /tmp/Alacritty-v{{ alacritty_macos_version }}.dmg
+      changed_when: true
+
+    - name: Remove previous Alacritty.app
+      become: false
+      ansible.builtin.file:
+        path: /Applications/Alacritty.app
+        state: absent
+
+    - name: Copy Alacritty.app to /Applications
+      ansible.builtin.command: ditto /tmp/alacritty-dmg/Alacritty.app /Applications/Alacritty.app
+      changed_when: true
+
+  always:
+    - name: Unmount alacritty DMG
+      ansible.builtin.command: hdiutil detach /tmp/alacritty-dmg
+      changed_when: true
+      failed_when: false
+
+- name: Find Homebrew prefix (macOS)
+  ansible.builtin.command: brew --prefix
+  register: alacritty_brew_prefix
+  changed_when: false
+  check_mode: false
+
+- name: Link alacritty binary into Homebrew bin (macOS)
   become: false
-  community.general.homebrew_cask:
-    name: alacritty
+  ansible.builtin.file:
+    src: /Applications/Alacritty.app/Contents/MacOS/alacritty
+    dest: "{{ alacritty_brew_prefix.stdout }}/bin/alacritty"
+    state: link
+    force: true

@@ -11,3 +11,9 @@ alacritty:
 # pacman, so the binary is extracted from an archived Arch package
 # instead. Bump this once SteamOS's glibc catches up.
 alacritty_steamos_version: "0.16.1"
+
+# Homebrew disabled the alacritty cask (it fails the Gatekeeper check), so
+# macOS installs the upstream release DMG. Bump both values together; the
+# checksum is the Alacritty-v<version>.dmg sha256 from the GitHub release.
+alacritty_macos_version: "0.17.0"
+alacritty_macos_sha256: "ad8d7de35fb38e43184776cac6dfee05ca325caa0b6639a06a55e54e4b026620"
