@@ -1,7 +1,25 @@
 ---
 # Homebrew disabled the alacritty cask on 2026-09-01 (it fails the macOS
-# Gatekeeper check), so install the upstream release DMG instead.
+# Gatekeeper check), so install the upstream release DMG instead. Everything
+# runs as the invoking user: Homebrew refuses to run as root, and a
+# root-owned Alacritty.app would break later upgrades and uninstall.
+- name: Check for a legacy alacritty cask install (macOS)
+  become: false
+  ansible.builtin.command: brew list --cask alacritty
+  register: alacritty_legacy_cask
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Uninstall legacy alacritty cask (macOS)
+  become: false
+  community.general.homebrew_cask:
+    name: alacritty
+    state: absent
+  when: alacritty_legacy_cask.rc == 0
+
 - name: Read installed alacritty version (macOS)
+  become: false
   ansible.builtin.command: >-
     defaults read /Applications/Alacritty.app/Contents/Info.plist CFBundleShortVersionString
   register: alacritty_macos_installed
@@ -10,39 +28,56 @@
   check_mode: false
 
 - name: Install alacritty from release DMG (macOS)
+  become: false
   when: alacritty_macos_installed.stdout | default('') != alacritty_macos_version
   block:
     - name: Download alacritty DMG
-      become: false
       ansible.builtin.get_url:
         url: "https://github.com/alacritty/alacritty/releases/download/v{{ alacritty_macos_version }}/Alacritty-v{{ alacritty_macos_version }}.dmg"
         dest: "/tmp/Alacritty-v{{ alacritty_macos_version }}.dmg"
         checksum: "sha256:{{ alacritty_macos_sha256 }}"
         mode: '0644'
 
+    - name: Create a unique DMG mount point
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: alacritty-dmg.
+      register: alacritty_dmg_mountpoint
+
     - name: Mount alacritty DMG
       ansible.builtin.command: >-
-        hdiutil attach -nobrowse -readonly -mountpoint /tmp/alacritty-dmg
+        hdiutil attach -nobrowse -readonly -mountpoint {{ alacritty_dmg_mountpoint.path }}
         /tmp/Alacritty-v{{ alacritty_macos_version }}.dmg
+      register: alacritty_dmg_attach
       changed_when: true
 
     - name: Remove previous Alacritty.app
-      become: false
       ansible.builtin.file:
         path: /Applications/Alacritty.app
         state: absent
 
     - name: Copy Alacritty.app to /Applications
-      ansible.builtin.command: ditto /tmp/alacritty-dmg/Alacritty.app /Applications/Alacritty.app
+      ansible.builtin.command: ditto {{ alacritty_dmg_mountpoint.path }}/Alacritty.app /Applications/Alacritty.app
       changed_when: true
 
   always:
     - name: Unmount alacritty DMG
-      ansible.builtin.command: hdiutil detach /tmp/alacritty-dmg
+      ansible.builtin.command: hdiutil detach {{ alacritty_dmg_mountpoint.path }}
+      register: alacritty_dmg_detach
+      until: alacritty_dmg_detach.rc == 0
+      retries: 3
+      delay: 2
       changed_when: true
-      failed_when: false
+      when: alacritty_dmg_attach is defined and alacritty_dmg_attach is succeeded
+
+    - name: Remove DMG mount point
+      ansible.builtin.file:
+        path: "{{ alacritty_dmg_mountpoint.path }}"
+        state: absent
+      when: alacritty_dmg_mountpoint.path is defined
 
 - name: Find Homebrew prefix (macOS)
+  become: false
   ansible.builtin.command: brew --prefix
   register: alacritty_brew_prefix
   changed_when: false
