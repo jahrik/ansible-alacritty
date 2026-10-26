@@ -12,6 +12,11 @@
     url: "https://archive.archlinux.org/packages/a/alacritty/alacritty-{{ alacritty_steamos_version }}-1-x86_64.pkg.tar.zst"
     dest: "/tmp/alacritty-{{ alacritty_steamos_version }}.pkg.tar.zst"
     mode: '0644'
+    timeout: 60
+  register: alacritty_package_download
+  retries: 3
+  delay: 5
+  until: alacritty_package_download is succeeded
 
 - name: Extract alacritty binary
   become: false
